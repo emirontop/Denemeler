@@ -1,0 +1,44 @@
+import requests
+import time
+
+API_URL = "https://growagardenapi.vercel.app/api/stock/GetStock"
+TELEGRAM_BOT_TOKEN = "7951710072:AAEaGftg4-wGo4zNU-s8Eopt_xBcyGdkYZE"
+TELEGRAM_CHAT_ID = "7219834796"
+
+def send_message(text):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": text
+    }
+    requests.post(url, data=data)
+
+# 🔔 Başlangıçta haber ver
+send_message("✅ Aktifim ağam... 💪 Bot çalışıyor!")
+
+def get_instock_items():
+    try:
+        response = requests.get(API_URL)
+        items = response.json()
+        instock = [item["name"] for item in items if item["inStock"]]
+        return instock
+    except Exception as e:
+        print("API Hatası:", e)
+        return []
+
+sent_last = ""
+
+while True:
+    stock_items = get_instock_items()
+    if stock_items:
+        message = "📦 Şu anda stokta:\n" + "\n".join(f"• {item}" for item in stock_items)
+        if message != sent_last:
+            send_message(message)
+            sent_last = message
+    else:
+        message = "❌ Şu anda stokta meyve yok."
+        if message != sent_last:
+            send_message(message)
+            sent_last = message
+
+    time.sleep(60)

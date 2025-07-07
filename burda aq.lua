@@ -56,7 +56,7 @@ local Themes = {
         OwnerTagBG = Color3.fromRGB(70, 70, 80),
         OwnerTagText = Color3.fromRGB(180, 180, 180),
         CloseBtnHover = Color3.fromRGB(255, 100, 100)
-    }
+    },
     Light = {
         Background    = Color3.fromRGB(240,240,240),
         Section       = Color3.fromRGB(220,220,220),

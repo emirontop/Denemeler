@@ -76,29 +76,39 @@ local Themes = {
 }
 
 -- Library içine:
+-- EmirGuiLib.lua içinde, return Library’dan hemen önce ekle:
+
+-- Dinamik tema değiştirme metodu
 function Library:SetTheme(name)
-    assert(Themes[name], "Theme not found: "..tostring(name))
+    assert(Themes[name], "Böyle bir tema yok: "..tostring(name))
+    -- Seçilen temayı Default olarak ata
     Themes.Default = Themes[name]
-    -- var olan tüm GUI elementlerini güncelle:
-    for _, win in ipairs(CoreGui:GetChildren()) do
-        if win.Name == "EmirGuiLib" then
-            -- pencereler
-            for _, frame in ipairs(win:GetDescendants()) do
-                if frame:IsA("Frame") or frame:IsA("TextLabel") or frame:IsA("TextButton") then
-                    -- property’leri tema değerlerine göre yeniden ata
-                    -- örneğin arkaplan renkleri:
-                    if frame.BackgroundColor3 == Themes.Default.Background or frame.BackgroundColor3 == Themes.Default.Section then
-                        frame.BackgroundColor3 = Themes.Default.Background
-                    end
-                    -- text renkleri
-                    if frame:IsA("TextLabel") or frame:IsA("TextButton") then
-                        frame.TextColor3 = Themes.Default.Text
-                    end
-                end
-            end
+
+    -- Mevcut tüm EmirGuiLib GUI elementlerini güncelle
+    for _, instance in ipairs(Gui:GetDescendants()) do
+        -- Frame arkaplanları
+        if instance:IsA("Frame") then
+            -- TitleBar, ContentArea, Container vb.
+            instance.BackgroundColor3 = (instance == instance.Parent and Themes.Default.Section) or Themes.Default.Background
         end
+        -- Buton arkaplanları
+        if instance:IsA("TextButton") then
+            instance.BackgroundColor3 = Themes.Default.ButtonBG or Themes.Default.Section
+            instance.TextColor3       = Themes.Default.Text
+        end
+        -- Label’lerin metin renkleri
+        if instance:IsA("TextLabel") then
+            instance.TextColor3 = Themes.Default.Text
+        end
+        -- ScrollingFrame (scrollbar) renkleri
+        if instance:IsA("ScrollingFrame") then
+            instance.ScrollBarImageColor3 = Themes.Default.Accent
+        end
+        -- Diğer widget’ların iç renkleri
+        -- (toggle, slider fill, dropdown bg vb. kullanıldıkları yerde otomatik)
     end
 end
+
 
 
 

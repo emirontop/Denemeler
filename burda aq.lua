@@ -56,24 +56,8 @@ local Themes = {
         OwnerTagBG = Color3.fromRGB(70, 70, 80),
         OwnerTagText = Color3.fromRGB(180, 180, 180),
         CloseBtnHover = Color3.fromRGB(255, 100, 100)
-    },
-    Light = {
-        Background    = Color3.fromRGB(240,240,240),
-        Section       = Color3.fromRGB(220,220,220),
-        Text          = Color3.fromRGB(20,20,20),
-        Accent        = Color3.fromRGB(0,120,215),
-        Hover         = Color3.fromRGB(200,200,200),
-        ToggleOn      = Color3.fromRGB(0,180,0),
-        ToggleOff     = Color3.fromRGB(180,0,0),
-        DropdownBG    = Color3.fromRGB(255,255,255),
-        SliderFill    = Color3.fromRGB(0,120,215),
-        TextBoxBG     = Color3.fromRGB(255,255,255),
-        ButtonBG      = Color3.fromRGB(230,230,230),
-        OwnerTagBG    = Color3.fromRGB(200,200,200),
-        OwnerTagText  = Color3.fromRGB(20,20,20),
-        CloseBtnHover = Color3.fromRGB(255,0,0)
-    },
-}
+    }
+    }
 
 -- Library içine:
 -- EmirGuiLib.lua içinde, return Library’dan hemen önce ekle:

@@ -57,7 +57,60 @@ local Themes = {
         OwnerTagText = Color3.fromRGB(180, 180, 180),
         CloseBtnHover = Color3.fromRGB(255, 100, 100)
     }
+    Light = {
+        Background    = Color3.fromRGB(240,240,240),
+        Section       = Color3.fromRGB(220,220,220),
+        Text          = Color3.fromRGB(20,20,20),
+        Accent        = Color3.fromRGB(0,120,215),
+        Hover         = Color3.fromRGB(200,200,200),
+        ToggleOn      = Color3.fromRGB(0,180,0),
+        ToggleOff     = Color3.fromRGB(180,0,0),
+        DropdownBG    = Color3.fromRGB(255,255,255),
+        SliderFill    = Color3.fromRGB(0,120,215),
+        TextBoxBG     = Color3.fromRGB(255,255,255),
+        ButtonBG      = Color3.fromRGB(230,230,230),
+        OwnerTagBG    = Color3.fromRGB(200,200,200),
+        OwnerTagText  = Color3.fromRGB(20,20,20),
+        CloseBtnHover = Color3.fromRGB(255,0,0)
+    },
 }
+
+-- Library içine:
+-- EmirGuiLib.lua içinde, return Library’dan hemen önce ekle:
+
+-- Dinamik tema değiştirme metodu
+function Library:SetTheme(name)
+    assert(Themes[name], "Böyle bir tema yok: "..tostring(name))
+    -- Seçilen temayı Default olarak ata
+    Themes.Default = Themes[name]
+
+    -- Mevcut tüm EmirGuiLib GUI elementlerini güncelle
+    for _, instance in ipairs(Gui:GetDescendants()) do
+        -- Frame arkaplanları
+        if instance:IsA("Frame") then
+            -- TitleBar, ContentArea, Container vb.
+            instance.BackgroundColor3 = (instance == instance.Parent and Themes.Default.Section) or Themes.Default.Background
+        end
+        -- Buton arkaplanları
+        if instance:IsA("TextButton") then
+            instance.BackgroundColor3 = Themes.Default.ButtonBG or Themes.Default.Section
+            instance.TextColor3       = Themes.Default.Text
+        end
+        -- Label’lerin metin renkleri
+        if instance:IsA("TextLabel") then
+            instance.TextColor3 = Themes.Default.Text
+        end
+        -- ScrollingFrame (scrollbar) renkleri
+        if instance:IsA("ScrollingFrame") then
+            instance.ScrollBarImageColor3 = Themes.Default.Accent
+        end
+        -- Diğer widget’ların iç renkleri
+        -- (toggle, slider fill, dropdown bg vb. kullanıldıkları yerde otomatik)
+    end
+end
+
+
+
 
 local Gui = Create("ScreenGui", {Name = "EmirGuiLib", ResetOnSpawn = false})
 Gui.Parent = CoreGui
@@ -1445,103 +1498,6 @@ function Section:AddLabel(text)
     end
     
     return label
-end
-
-function section:AddColorPicker(name, defaultColor, callback)
-    local colorPickerFrame = Instance.new("Frame")
-    colorPickerFrame.Name = name
-    colorPickerFrame.Size = UDim2.new(1, -10, 0, 160)
-    colorPickerFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    colorPickerFrame.BorderSizePixel = 0
-    colorPickerFrame.Parent = self._container -- section içindeki GUI konteyner
-
-    local corner = Instance.new("UICorner", colorPickerFrame)
-    corner.CornerRadius = UDim.new(0, 8)
-
-    -- Başlık
-    local title = Instance.new("TextLabel")
-    title.Text = name or "Color Picker"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 14
-    title.TextColor3 = Color3.new(1, 1, 1)
-    title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -10, 0, 20)
-    title.Position = UDim2.new(0, 5, 0, 5)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Parent = colorPickerFrame
-
-    -- Soldaki gradyan renk kutusu
-    local palette = Instance.new("ImageButton")
-    palette.Size = UDim2.new(0, 120, 0, 100)
-    palette.Position = UDim2.new(0, 10, 0, 30)
-    palette.Image = "rbxassetid://6020299385" -- örnek gradient texture
-    palette.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    palette.BorderSizePixel = 0
-    palette.Parent = colorPickerFrame
-
-    -- Dikey Hue Slider
-    local hueBar = Instance.new("Frame")
-    hueBar.Size = UDim2.new(0, 20, 0, 100)
-    hueBar.Position = UDim2.new(0, 140, 0, 30)
-    hueBar.BorderSizePixel = 0
-    hueBar.Parent = colorPickerFrame
-
-    local gradient = Instance.new("UIGradient", hueBar)
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
-    })
-
-    -- RGB ve HEX input kutuları
-    local hexBox = Instance.new("TextBox")
-    hexBox.PlaceholderText = "#FFFFFF"
-    hexBox.Text = ""
-    hexBox.Size = UDim2.new(0, 80, 0, 24)
-    hexBox.Position = UDim2.new(0, 170, 0, 30)
-    hexBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    hexBox.TextColor3 = Color3.new(1, 1, 1)
-    hexBox.Font = Enum.Font.Code
-    hexBox.TextSize = 14
-    hexBox.Parent = colorPickerFrame
-
-    local preview = Instance.new("Frame")
-    preview.Size = UDim2.new(0, 30, 0, 24)
-    preview.Position = UDim2.new(0, 260, 0, 30)
-    preview.BackgroundColor3 = defaultColor or Color3.fromRGB(255, 255, 255)
-    preview.BorderSizePixel = 0
-    preview.Parent = colorPickerFrame
-
-    local previewCorner = Instance.new("UICorner", preview)
-    previewCorner.CornerRadius = UDim.new(0, 4)
-
-    -- Onay butonu
-    local selectBtn = Instance.new("TextButton")
-    selectBtn.Text = "Select"
-    selectBtn.Size = UDim2.new(0, 100, 0, 28)
-    selectBtn.Position = UDim2.new(0, 170, 0, 70)
-    selectBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    selectBtn.TextColor3 = Color3.new(1, 1, 1)
-    selectBtn.Font = Enum.Font.GothamSemibold
-    selectBtn.TextSize = 14
-    selectBtn.Parent = colorPickerFrame
-
-    local btnCorner = Instance.new("UICorner", selectBtn)
-    btnCorner.CornerRadius = UDim.new(0, 6)
-
-    -- Tıklama olayı (şimdilik placeholder)
-    selectBtn.MouseButton1Click:Connect(function()
-        local selected = preview.BackgroundColor3
-        if callback then
-            callback(selected)
-        end
-    end)
-
-    return colorPickerFrame
 end
 
 return Library 
